@@ -9,13 +9,10 @@ router.get("/", (req, res) => {
   res.send("<h1>TM Server Is Working Perfectly !!<h1/>");
 });
 
-router.use("/auth", authHelper);
+router.use("/auth", authHelper);  // All the api's regarding auth is here inside authHelper
 
 router.use(authenticateToken);  // Here we are validating all the token
 
-router.use("/tm", tmHelper);
+router.use("/tm", tmHelper);  // All the api's regarding teacher's management is here
 
 export default router;
-
-
-

@@ -8,20 +8,15 @@ const router = Router();
     @ Pushpendra
     API Path - "/auth/signup"
     Desc - Created api for user signup
-    Params - { 
-                user_first_name: string,  
-                user_last_name: string,
-                user_email: string, 
-                password: string,
-              }
-    Date - 30/07/23
+    Params - {}
+    Date - 06/10/23
 
 */
 
-router.post("/signup", async (req, res) => {
+router.get("/get_tm_list", async (req, res) => {
     try {
         const { body } = req;
-        const userData = await tmhelperService.createTm(body);
+        const userData = await tmhelperService.get_tm_list(body);
         res.send(userData);
     } catch (err) {
         console.log("Error in {/signup} in {authHelper.mjs}, ERROR ----->>>>> \n \n", err);

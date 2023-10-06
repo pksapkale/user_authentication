@@ -14,7 +14,7 @@ const router = Router();
                 user_email: string, 
                 password: string,
               }
-    Date - 30/07/23
+    Date - 06/10/23
 
 */
 
@@ -38,7 +38,7 @@ router.post("/signup", async (req, res) => {
                 user_email: string, 
                 password: string,
               }
-    Date - 05/10/23
+    Date - 06/10/23
 
 */
 
@@ -61,7 +61,7 @@ router.post("/login", async (req, res) => {
     Params - { 
                 refresh_token: string
               }
-    Date - 05/10/23
+    Date - 06/10/23
 
 */
 

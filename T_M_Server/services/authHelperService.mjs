@@ -24,12 +24,56 @@ const authHelperService = {
     const hashPassword = await bcrypt.hash(newUser.password, 10);  // Here we are hashing the {user_password}
     newUser['password'] = hashPassword; // Replacing password with hash password
 
-    let insertQuery = "INSERT INTO tm_users SET ?";  // Creating new user
+    let insertQuery = "INSERT INTO tm_users SET ?";  // Creating new user with hash password here
     const [rows] = await pool.query(insertQuery, newUser);
 
     const { token, refresh_token } = await this.setTokenRefToken(rows.insertId); // Here we are setting token and refresh token in to database
 
     return { status: true, message: "User inserted successfully", data: { token, refresh_token } }
+  },
+
+  /*
+ 
+    @ Pushpendra
+    Method Name - {userLogin}
+    Desc - Created method for login user
+    Date - 05/10/23
+ 
+  */
+
+  login: async function (body) {
+    let user = body;
+    const { isExists, userData } = await this.checkEmailExists(body.user_email);   // Checking whether email already exists or not
+    if (!isExists) {
+      return { status: false, message: "Email not exists !!", data: [] }
+    }
+    else {
+      let passCheck = await bcrypt.compare(user.password, userData[0].password);  // Validating password here
+      if (!passCheck) {
+        return { status: false, message: "Invalid Password !!", data: [] }
+      }
+      const { token, refresh_token } = await this.setTokenRefToken(userData[0].user_id); // Setting new token and refresh token here
+      return { status: true, message: "User inserted successfully", data: { token, refresh_token } };
+    }
+  },
+
+  /*
+  
+    @ Pushpendra
+    Method Name - {re_get_token}
+    Desc - Created method for regenerate token
+    Date - 05/10/23
+  
+  */
+
+  re_gen_token: async function (body) {
+    let user = body;
+    let checkRefToken = await this.checkRefreshToken(user.refresh_token); // Validating refresh token
+    if (!checkRefToken.status) {  // If token is invalid
+      return { status: false, message: checkRefToken.message, data: [] };
+    }
+    const { token, refresh_token } = await this.setTokenRefToken(checkRefToken.user_id);
+    return { status: true, message: "New Token Setted Successfully", data: { token, refresh_token } }
   },
 
   /*
@@ -41,14 +85,12 @@ const authHelperService = {
  
   */
 
-  setTokenRefToken(user_id) {
-    return new Promise(async res => {
-      let token = jwt.sign({ user_id: user_id, user_type: 'user' }, process.env.TOKEN_KEY, { expiresIn: '5h' });  // Token will expire in 1 hour
-      let refresh_token = jwt.sign({ user_id: user_id, user_type: 'user' }, process.env.REF_TOKEN_KEY, { expiresIn: '90d' });  // Ref Token will expire in 90 days
-      let updateQuery = "UPDATE tm_users SET ? WHERE user_id = ?"; // Setting token and refresh token here
-      const [updateData] = await pool.query(updateQuery, [{ token, refresh_token }, user_id]);
-      res({ token, refresh_token });
-    });
+  async setTokenRefToken(user_id) {
+    let token = jwt.sign({ user_id: user_id, user_type: 'user' }, process.env.TOKEN_KEY, { expiresIn: '5h' });  // Token will expire in 1 hour
+    let refresh_token = jwt.sign({ user_id: user_id, user_type: 'user' }, process.env.REFRESH_TOKEN_KEY, { expiresIn: '90d' });  // Ref Token will expire in 90 days
+    let updateQuery = "UPDATE tm_users SET ? WHERE user_id = ?"; // Setting token and refresh token here
+    const [updateData] = await pool.query(updateQuery, [{ token, refresh_token }, user_id]);
+    return { token, refresh_token };
   },
 
   /*
@@ -90,50 +132,33 @@ const authHelperService = {
     };   // If we got email then we will send true
   },
 
-  /*
- 
-    @ Pushpendra
-    Method Name - {validatePassword}
-    Desc - Created method for checking whether password is matching to our db password or not
-    Date - 05/10/23
- 
-  */
-
-  validatePassword: async function (userPass, dbPass) {
-    return new Promise((res, rej) => {
-      bcrypt.compare(userPass, dbPass, function (err, result) {
-        if (err) {
-          rej();
-        }
-        res(result);
-      });
-    })
-  },
 
   /*
  
     @ Pushpendra
-    Method Name - {userLogin}
-    Desc - Created method for login user
+    Method Name - {checkRefreshToken}
+    Desc - Created method for validate refresh token
     Date - 05/10/23
  
   */
 
-  login: async function (body) {
-    let user = body;
-    const { isExists, userData } = await this.checkEmailExists(body.user_email);   // Checking whether email already exists or not
-    if (!isExists) {
-      return { status: false, message: "Email not exists !!", data: [] }
+  async checkRefreshToken(refresh_token) {
+    try {
+      jwt.verify(refresh_token, process.env.REFRESH_TOKEN_KEY); // Here verify the refresh token
+    }
+    catch (err) {
+      return { status: false, message: err.message };
+    }
+
+    const [rows] = await pool.query(`SELECT * FROM tm_users WHERE refresh_token = ?`, [refresh_token]);
+    if (rows.length == 0) {
+      return { status: false, message: 'Refresh token is not found in db' };
     }
     else {
-      let passCheck = await this.validatePassword(user.password, userData[0].password); // Validating password here
-      if (!passCheck) {
-        return { status: false, message: "Invalid Password !!", data: [] }
-      }
-      const { token, refresh_token } = await this.setTokenRefToken(userData[0].user_id); // Setting new token and referesh token here
-      return { status: true, message: "User inserted successfully", data: { token, refresh_token } };
+      return { status: true, user_id: rows[0].user_id };
     }
-  }
+  },
+
 }
 
 export default authHelperService;

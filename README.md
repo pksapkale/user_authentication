@@ -1,29 +1,44 @@
-# Welcome To User_Authentication System
+Certainly! Let's enhance the readability and provide more detailed information:
 
-# For running this project into your local machine please follow this steps - 
+```markdown
+# Welcome To User Authentication System
 
+## Getting Started
 
-## 1st Step
-# Install node version 18.18.0
+Thank you for choosing our User Authentication System! Follow these steps to set up the project on your local machine:
 
+### Step 1: Install Node.js
 
-## 2nd Step - Install MySQL Server
-# Use MySQL version 8.1
+Make sure you have Node.js version 18.18.0 installed. If not, you can download it [here](https://nodejs.org/).
 
+### Step 2: Install MySQL Server
 
-## 3rd Step - Create a database and import given file in it ( You can use Workbench or phpMyAdmin )
-# You can get the import file from dependencies/t_m_db.sql
+Ensure you have MySQL version 8.1 installed. You can download it [here](https://dev.mysql.com/downloads/).
 
+### Step 3: Set Up the Database
 
-## 4th Step - Create a .env file
-# You can take reference from env.js
-# You can get the file from dependencies/env.js 
+1. Create a new database in your MySQL server.
+2. Import the initial data using the provided file (`dependencies/t_m_db.sql`).
+   - You can use tools like MySQL Workbench or phpMyAdmin for this step.
 
+### Step 4: Create a .env File
 
-## 5th Step - Open project root directory in terminal and Install all packages with command
-# `npm install`
+1. Create a new file named `.env` in the root directory of your project.
+2. Reference the structure from the template file located at `dependencies/env.js`.
 
+### Step 5: Install Dependencies
 
-## Now You Are Ready To Go
-# run this script to start our server
-# `npm start`
+Open your terminal, navigate to the project's root directory, and run the following commands:
+
+```bash
+npm install
+npm start
+```
+
+These commands will install all necessary dependencies and start the server.
+
+Now you're all set! Open your browser and navigate to `http://localhost:your-chosen-port` to see the authentication system in action.
+
+Feel free to explore the code and customize it according to your needs
+Happy coding!
+```

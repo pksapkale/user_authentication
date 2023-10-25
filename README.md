@@ -1,6 +1,3 @@
-Certainly! Let's enhance the readability and provide more detailed information:
-
-```markdown
 # Welcome To User Authentication System
 
 ## Getting Started
@@ -41,4 +38,3 @@ Now you're all set! Open your browser and navigate to `http://localhost:your-cho
 
 Feel free to explore the code and customize it according to your needs
 Happy coding!
-```

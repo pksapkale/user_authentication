@@ -1,7 +1,6 @@
 import { Router } from "express";
 import authHelper from "./routes/authHelper.mjs";
 import authenticateToken from "./authenticateToken.js";
-import tmHelper from "./routes/tmHelper.mjs";
 
 const router = Router();
 
@@ -11,8 +10,22 @@ router.get("/", (req, res) => {
 
 router.use("/auth", authHelper);  // All the api's regarding auth is here inside authHelper
 
+/*
+
+  The apis which you want to 
+  Run without token validation should be here
+  Before router.use(authenticateToken); 
+
+*/
+
 router.use(authenticateToken);  // Here we are validating all the token
 
-router.use("/tm", tmHelper);  // All the api's regarding teacher's management is here
+/*
+
+  The apis which you want to 
+  Run after token validation should be here
+  After router.use(authenticateToken); 
+
+*/
 
 export default router;

@@ -32,8 +32,8 @@ router.post("/signup", async (req, res) => {
 /*
 
     @ Pushpendra
-    API Path - "/auth/signup"
-    Desc - Created api for user signup
+    API Path - "/auth/login"
+    Desc - Created api for user login
     Params - { 
                 user_email: string, 
                 password: string,
@@ -57,7 +57,7 @@ router.post("/login", async (req, res) => {
 
     @ Pushpendra
     API Path - "/auth/re_gen_token"
-    Desc - Created api for user signup
+    Desc - Created api for user to generate token from refresh token
     Params - { 
                 refresh_token: string
               }

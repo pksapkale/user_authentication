@@ -87,7 +87,7 @@ const authHelperService = {
 
   async setTokenRefToken(user_id) {
     let token = jwt.sign({ user_id: user_id, user_type: 'user' }, process.env.TOKEN_KEY, { expiresIn: '5h' });  // Token will expire in 1 hour
-    let refresh_token = jwt.sign({ user_id: user_id, user_type: 'user' }, process.env.REFRESH_TOKEN_KEY, { expiresIn: '90d' });  // Ref Token will expire in 90 days
+    let refresh_token = jwt.sign({ user_id: user_id, user_type: 'user' }, process.env.REFRESH_TOKEN_KEY, { expiresIn: '10d' });  // Ref Token will expire in 90 days
     let updateQuery = "UPDATE tm_users SET ? WHERE user_id = ?"; // Setting token and refresh token here
     const [updateData] = await pool.query(updateQuery, [{ token, refresh_token }, user_id]);
     return { token, refresh_token };
